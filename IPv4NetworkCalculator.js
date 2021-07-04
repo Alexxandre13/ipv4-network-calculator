@@ -13,66 +13,68 @@ class IPv4PrivateNetworkCalculator {
      * @param {number} cidr The CIDR number representing the mask, must be comprise between 1 and 32
      */
     constructor(decHost, cidr) {
+        // Constants relative to IPv4 networks
+        this.BITS_IN_BYTE = 8
+        this.BITS_IN_IPV4 = 32
+        this.BYTE_POSSIBILITIES = 256
+
         // Input needed
         this.decHost = decHost
         this.cidr = cidr
 
         // Binary results
         this.binHost = this.decBytesToBinBytes(this.decHost)
-        this.binMask = this.cidrToBinary(this.cidr)
+        this.binMask = this.cidrToBinMask(this.cidr)
         this.binNetwork = this.calcBinNetwork(this.binHost, this.cidr)
         this.binBroadcast = this.calcBinBroadcast(this.binNetwork, this.cidr)
-        this.binFirstAddress = this.calcFirstAddress(this.binNetwork)
-        this.binLastAddress = this.calcLastAddress(this.binBroadcast)
+        this.binFirstAddress = this.calcBinFirstAddress(this.binNetwork)
+        this.binLastAddress = this.calcBinLastAddress(this.binBroadcast)
+        this.binWildCardMask = this.calcBinWildCardMask(this.binMask)
 
         // Decimal results
-        this.decNetwork = this.ToDecBytes(this.binNetwork)
-        this.decMask = this.ToDecBytes(this.binMask)
-        this.decBroadcast = this.ToDecBytes(this.binBroadcast)
-        this.decFirstAddress = this.ToDecBytes(this.binFirstAddress)
-        this.decLastAddress = this.ToDecBytes(this.binLastAddress)
+        this.decNetwork = this.toDecBytes(this.binNetwork)
+        this.decMask = this.toDecBytes(this.binMask)
+        this.decBroadcast = this.toDecBytes(this.binBroadcast)
+        this.decFirstAddress = this.toDecBytes(this.binFirstAddress)
+        this.decLastAddress = this.toDecBytes(this.binLastAddress)
+        this.decWildCardMask = this.toDecBytes(this.binWildCardMask)
 
-        // Others Results
+        // Additionnal Results
         this.numberOfUsableHosts = this.calcNumberOfUsableHosts(this.binMask)
         this.increment = this.calcIncrement(this.cidr)
     }
 
     /**
      * @param {object} decimalBytes Take the object with the four bytes 
-     * @returns {string} Returns the four bytes into one single binary string that keeps 0
+     * @returns {string} Returns the four bytes into a single binary string that keeps 0
      */
-    decBytesToBinBytes = decimalBytes => {
-        let binaryString = ''
-        Object.values(decimalBytes).map(byte => { binaryString += this.toBinary(byte) })
-        return String(binaryString)
+    decBytesToBinBytes = decBytes => String(
+        this.toBinByte(decBytes.b1) +
+        this.toBinByte(decBytes.b2) +
+        this.toBinByte(decBytes.b3) +
+        this.toBinByte(decBytes.b4)
+    )
+
+    /**
+     * @param {number} decByte A decimal byte number
+     * @returns {string} Returns a binary byte string.
+     */
+    toBinByte = decByte => {
+        const binary = (decByte >>> 0).toString(2)
+        return String('0'.repeat(this.BITS_IN_BYTE - binary.length) + binary)
     }
 
     /**
-     * @param {number} decimal A decimal number
-     * @returns {string} Returns the converted number into a binary string.
+     * @param {number} cidr Take a number between 1 and 32.
+     * @returns Returns a binary byte string mask.
      */
-    toBinary = decimal => {
-        let binary = (decimal >>> 0).toString(2)
-        if (binary.length < 8) {
-            const numberOfIteration = 8 - binary.length
-            for (let i = 0; i < numberOfIteration; i++) {
-                binary = '0' + binary
-            }
-        }
-        return String(binary)
-    }
-
-    /**
-     * @param {number} cidr 
-     * @returns Returns the cidr number into a full binary string - 32 characters.
-     */
-    cidrToBinary = cidr => String('1'.repeat(cidr) + '0'.repeat(32 - cidr))
+    cidrToBinMask = cidr => String('1'.repeat(cidr) + '0'.repeat(this.BITS_IN_IPV4 - cidr))
 
     /**
      * @param {string} binary The full binary string - 32 characters
      * @returns {object} returns an object containing four keys corresponding to the 4 bytes
      */
-    ToDecBytes = binary => {
+    toDecBytes = binary => {
         return {
             b1: this.toDecimal(binary.substring(0, 8)),
             b2: this.toDecimal(binary.substring(8, 16)),
@@ -82,33 +84,78 @@ class IPv4PrivateNetworkCalculator {
     }
 
     /**
-     * @param {string} binary 
-     * @returns {number} Returns the input binary number into decimal
+     * @param {string} binary A binary input string
+     * @returns {number} Returns decimal
      */
     toDecimal = binary => parseInt(binary, 2)
 
-    calcBinNetwork = (binHost, cidr) => binHost.substring(0, cidr) + '0'.repeat(32 - cidr)
+    /**
+     * @param {string} binHost A binary host
+     * @param {number} cidr The cidr number between 1 and 32
+     * @returns {string}  Returns a binary network address
+     */
+    calcBinNetwork = (binHost, cidr) => String(binHost.substring(0, cidr) + '0'.repeat(this.BITS_IN_IPV4 - cidr))
 
-    calcNumberOfUsableHosts = bin => this.toDecimal([...bin].map(bit => bit === '1' ? '0' : '1').join('')) - 1
+    /**
+     * @param {string} binMask Take a binary mask as input
+     * @returns {string} Returns the binary wildcard mask
+     */
+    calcBinWildCardMask = binMask => String(this.calcInverseBit(binMask))
 
-    calcIncrement = cidr => 256 / 2 ** (cidr % 8)
+    /**
+     * @param {string} binMask Take a binary mask as input
+     * @returns {number} Returns the number of usable hosts for the current mask
+     */
+    calcNumberOfUsableHosts = binMask => this.toDecimal(this.calcInverseBit(binMask)) - 1
 
-    calcBinBroadcast = (binNetwork, cidr) => binNetwork.substring(0, cidr) + '1'.repeat(32 - cidr)
+    
+    /**
+     * @param {string} bin A binary string
+     * @returns {string} Returns the binary input but with bits inversed
+     */
+    calcInverseBit = bin => String([...bin].map(bit => bit === '1' ? '0' : '1').join(''))
 
-    calcFirstAddress = binNetwork => binNetwork.substring(0, 31) + '1'
 
-    calcLastAddress = binBroadcast => binBroadcast.substring(0, 31) + '0'
+    /**
+     * @param {number} cidr The CIDR notation between 1 and 32
+     * @returns {number} Returns the increment for the next subnet network
+     */
+    calcIncrement = cidr => this.BYTE_POSSIBILITIES / 2 ** (cidr % this.BITS_IN_BYTE)
+
+    /**
+     * @param {string} binNetwork Take a binary network address string
+     * @param {number} cidr Take the CIDR notation number between 1 and 32
+     * @returns {string} Returns the broadcast address in binary format
+     */
+    calcBinBroadcast = (binNetwork, cidr) => {
+        return String(binNetwork.substring(0, cidr) + '1'.repeat(this.BITS_IN_IPV4 - cidr))
+    }
+
+    /**
+     * @param {string} binNetwork Take the binary network address
+     * @returns {string} Returns the first usable address for a host
+     */
+    calcBinFirstAddress = binNetwork => String(binNetwork.substring(0, this.BITS_IN_IPV4 - 1) + '1')
+
+    
+    /**
+     * @param {string} binBroadcast Take the binary broadcast address
+     * @returns {string} Returns the last usable address for a host
+     */
+    calcBinLastAddress = binBroadcast => String(binBroadcast.substring(0, this.BITS_IN_IPV4 - 1) + '0')
 
     getAllResults = () => {
         return {
             binHost: this.binHost,
             binMask: this.binMask,
+            binWildCardMask: this.binWildCardMask,
             binNetwork: this.binNetwork,
             binBroadcast: this.binBroadcast,
             binFirstAddress: this.binFirstAddress,
             binLastAddress: this.binLastAddress,
             decHost: this.decHost,
             decMask: this.decMask,
+            decWildCardMask: this.decWildCardMask,
             decNetwork: this.decNetwork,
             decBroadcast: this.decBroadcast,
             decFirstAddress: this.decFirstAddress,
@@ -120,6 +167,6 @@ class IPv4PrivateNetworkCalculator {
     }
 }
 
-// const IPv4Calc = new IPv4PrivateNetworkCalculator({ b1: 192, b2: 168, b3: 0, b4: 1 }, 18)
+// const IPv4Calc = new IPv4PrivateNetworkCalculator({ b1: 172, b2: 16, b3: 145, b4: 11 }, 16)
 
 // console.log(IPv4Calc.getAllResults())
