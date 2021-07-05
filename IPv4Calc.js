@@ -1,8 +1,12 @@
-
 /**
  * Allow to calculate IPv4 subnet network informations such as the IP network address, the brodcast address, the number and range of usable hosts.  
  */
-class IPv4PrivateNetworkCalculator {
+ module.exports = class IPv4Calc {
+
+    // Static constants relative to IPv4 networks
+    static BITS_IN_BYTE = 8
+    static BITS_IN_IPV4 = 32
+    static BYTE_POSSIBILITIES = 256
 
     /**
      * @param {object} decHost An object with the four decimals bytes
@@ -13,11 +17,6 @@ class IPv4PrivateNetworkCalculator {
      * @param {number} cidr The CIDR number representing the mask, must be comprise between 1 and 32
      */
     constructor(decHost, cidr) {
-        // Constants relative to IPv4 networks
-        this.BITS_IN_BYTE = 8
-        this.BITS_IN_IPV4 = 32
-        this.BYTE_POSSIBILITIES = 256
-
         // Input needed
         this.decHost = decHost
         this.cidr = cidr
@@ -61,14 +60,14 @@ class IPv4PrivateNetworkCalculator {
      */
     toBinByte = decByte => {
         const binary = (decByte >>> 0).toString(2)
-        return String('0'.repeat(this.BITS_IN_BYTE - binary.length) + binary)
+        return String('0'.repeat(IPv4Calc.BITS_IN_BYTE - binary.length) + binary)
     }
 
     /**
      * @param {number} cidr Take a number between 1 and 32.
      * @returns Returns a binary byte string mask.
      */
-    cidrToBinMask = cidr => String('1'.repeat(cidr) + '0'.repeat(this.BITS_IN_IPV4 - cidr))
+    cidrToBinMask = cidr => String('1'.repeat(cidr) + '0'.repeat(IPv4Calc.BITS_IN_IPV4 - cidr))
 
     /**
      * @param {string} binary The full binary string - 32 characters
@@ -94,7 +93,7 @@ class IPv4PrivateNetworkCalculator {
      * @param {number} cidr The cidr number between 1 and 32
      * @returns {string}  Returns a binary network address
      */
-    calcBinNetwork = (binHost, cidr) => String(binHost.substring(0, cidr) + '0'.repeat(this.BITS_IN_IPV4 - cidr))
+    calcBinNetwork = (binHost, cidr) => String(binHost.substring(0, cidr) + '0'.repeat(IPv4Calc.BITS_IN_IPV4 - cidr))
 
     /**
      * @param {string} binMask Take a binary mask as input
@@ -120,7 +119,7 @@ class IPv4PrivateNetworkCalculator {
      * @param {number} cidr The CIDR notation between 1 and 32
      * @returns {number} Returns the increment for the next subnet network
      */
-    calcIncrement = cidr => this.BYTE_POSSIBILITIES / 2 ** (cidr % this.BITS_IN_BYTE)
+    calcIncrement = cidr => IPv4Calc.BYTE_POSSIBILITIES / 2 ** (cidr % IPv4Calc.BITS_IN_BYTE)
 
     /**
      * @param {string} binNetwork Take a binary network address string
@@ -128,21 +127,21 @@ class IPv4PrivateNetworkCalculator {
      * @returns {string} Returns the broadcast address in binary format
      */
     calcBinBroadcast = (binNetwork, cidr) => {
-        return String(binNetwork.substring(0, cidr) + '1'.repeat(this.BITS_IN_IPV4 - cidr))
+        return String(binNetwork.substring(0, cidr) + '1'.repeat(IPv4Calc.BITS_IN_IPV4 - cidr))
     }
 
     /**
      * @param {string} binNetwork Take the binary network address
      * @returns {string} Returns the first usable address for a host
      */
-    calcBinFirstAddress = binNetwork => String(binNetwork.substring(0, this.BITS_IN_IPV4 - 1) + '1')
+    calcBinFirstAddress = binNetwork => String(binNetwork.substring(0, IPv4Calc.BITS_IN_IPV4 - 1) + '1')
 
     
     /**
      * @param {string} binBroadcast Take the binary broadcast address
      * @returns {string} Returns the last usable address for a host
      */
-    calcBinLastAddress = binBroadcast => String(binBroadcast.substring(0, this.BITS_IN_IPV4 - 1) + '0')
+    calcBinLastAddress = binBroadcast => String(binBroadcast.substring(0, IPv4Calc.BITS_IN_IPV4 - 1) + '0')
 
     getAllResults = () => {
         return {
@@ -166,7 +165,3 @@ class IPv4PrivateNetworkCalculator {
         }
     }
 }
-
-// const IPv4Calc = new IPv4PrivateNetworkCalculator({ b1: 172, b2: 16, b3: 145, b4: 11 }, 16)
-
-// console.log(IPv4Calc.getAllResults())
