@@ -1,6 +1,11 @@
-const IPv4calculator = require('./IPv4NetworkCalculator')
+const IPv4 = require('./IPv4NetworkCalculator')
 
-const IPv4 = new IPv4calculator('192.168.26.1/27')
+const classC = new IPv4('192.168.26.1/26')
 
-console.log(IPv4.getDecimalResults())
-console.log(IPv4.getSubNetworks())
+console.log(classC.getAllResults())
+console.log(classC.getSubNetworks())
+
+const classB = new IPv4('172.16.5.54 255.255.0.0')
+
+console.log(classB.getDecimalResults())
+console.log(classB.getBinaryResults())

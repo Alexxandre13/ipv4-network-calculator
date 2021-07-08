@@ -23,38 +23,38 @@ module.exports = class IPv4 {
     constructor(hostAddr) {
         const octets = hostAddr.replace(/(\.|\/| )/g, '.').split('.');
         // Host object
-        this.decHost = { o1: octets[0], o2: octets[1], o3: octets[2], o4: octets[3] }
-        try { IPv4.#checkIp(this.decHost) } catch (e) { console.log(e); return }
+        this.#decHost = { o1: octets[0], o2: octets[1], o3: octets[2], o4: octets[3] }
+        try { IPv4.#checkIp(this.#decHost) } catch (e) { console.log(e); return }
 
         if (octets.length === 5) {
             // CIDR NOTATION
-            this.cidr = Number(octets[4])
-            try { IPv4.#checkRangeAndIsNan('CIDR', this.cidr, IPv4.CIDR_MIN, IPv4.CIDR_MAX) } catch (e) { console.log(e); return }
-            this.binMask = IPv4.#cidrToBinMask(this.cidr)
+            this.#cidr = Number(octets[4])
+            try { IPv4.#checkRangeAndIsNan('CIDR', this.#cidr, IPv4.CIDR_MIN, IPv4.CIDR_MAX) } catch (e) { console.log(e); return }
+            this.#binMask = IPv4.#cidrToBinMask(this.#cidr)
         } else if (octets.length === 8) {
             // MASK NOTATION
-            this.decMask = { o1: octets[4], o2: octets[5], o3: octets[6], o4: octets[7] }
-            try { IPv4.#checkIp(this.decMask) } catch (e) { console.log(e); return }
+            this.#decMask = { o1: octets[4], o2: octets[5], o3: octets[6], o4: octets[7] }
+            try { IPv4.#checkIp(this.#decMask) } catch (e) { console.log(e); return }
             // TO ADD : CHeck if mask is valid
-            this.binMask = IPv4.#decIPtoBinIP(this.decMask)
-            this.cidr = IPv4.#binMasktoCidr(this.binMask)
+            this.#binMask = IPv4.#decIPtoBinIP(this.#decMask)
+            this.#cidr = IPv4.#binMasktoCidr(this.#binMask)
         } else {
             throw new Error("The host input isn't valid, must be like : '192.168.0.1/24' or '192.168.0.1 255.255.255.0'")
         }
 
         // Binary calculation
-        this.binHost = IPv4.#decIPtoBinIP(this.decHost)
-        this.binNetwork = IPv4.#calcBinNetwork(this.binHost, this.cidr)
-        this.binBroadcast = IPv4.#calcBinBroadcast(this.binNetwork, this.cidr)
-        this.binFirstAddr = IPv4.#calcbinFirstAddr(this.binNetwork)
-        this.binLastAddr = IPv4.#calcbinLastAddr(this.binBroadcast)
-        this.binWildCardMask = IPv4.#calcBinWildCardMask(this.binMask)
+        this.#binHost = IPv4.#decIPtoBinIP(this.#decHost)
+        this.#binNetwork = IPv4.#calcBinNetwork(this.#binHost, this.#cidr)
+        this.#binBroadcast = IPv4.#calcBinBroadcast(this.#binNetwork, this.#cidr)
+        this.#binFirstAddr = IPv4.#calcbinFirstAddr(this.#binNetwork)
+        this.#binLastAddr = IPv4.#calcbinLastAddr(this.#binBroadcast)
+        this.#binWildCardMask = IPv4.#calcBinWildCardMask(this.#binMask)
 
         // Additionnal informations
-        this.numberOfUsableHosts = IPv4.#calcNumberOfUsableHosts(this.binMask)
-        this.increment = IPv4.#calcIncrement(this.cidr)
-        this.netBitsInCurrentOctet = this.cidr % IPv4.BITS_IN_OCTET
-        this.numberOfSubNetworks = 2 ** this.netBitsInCurrentOctet
+        this.#numberOfUsableHosts = IPv4.#calcNumberOfUsableHosts(this.#binMask)
+        this.#increment = IPv4.#calcIncrement(this.#cidr)
+        this.#netBitsInCurrentOctet = this.#cidr % IPv4.BITS_IN_OCTET
+        this.#numberOfSubNetworks = 2 ** this.#netBitsInCurrentOctet
     }
 
     /**
@@ -65,9 +65,7 @@ module.exports = class IPv4 {
      * @param {number} Ip.o3 The third octet
      * @param {number} Ip.o4 The fourth octet
      */
-    static #checkIp = Ip => {
-        Object.values(Ip).map(octet => IPv4.#checkRangeAndIsNan('Value', octet, IPv4.OCTET_MIN, IPv4.OCTET_MAX))
-    }
+    static #checkIp = ip => Object.values(ip).map(octet => IPv4.#checkRangeAndIsNan('Value', octet, IPv4.OCTET_MIN, IPv4.OCTET_MAX))
 
     /**
      * Check if value is within the range and is a number type.
@@ -195,21 +193,33 @@ module.exports = class IPv4 {
     static #calcbinLastAddr = binBroadcast => String(binBroadcast.substring(0, IPv4.BITS_IN_IPV4 - 1) + '0')
 
     /**
+     * @param {string} binOctet The binary octet that contains the network ID and the host ID.
+     * @returns Returns a network neighbour in binary format when CIDR or MASK allows subnet network
+     */
+     #calcBinNeighbourNetwork = binOctet => {
+        const floorCidr = this.#cidr - this.#netBitsInCurrentOctet
+        const floorBinNetwork = IPv4.#calcBinNetwork(this.#binNetwork, floorCidr)
+        return floorBinNetwork.substring(0, floorCidr)
+            + binOctet
+            + floorBinNetwork.substring(floorCidr + IPv4.BITS_IN_OCTET, IPv4.BITS_IN_IPV4)
+    }
+
+    /**
      * @returns {object} Returns all the results in decimal form plus additionnal information
      */
     getDecimalResults = () => {
         return {
-            decHost: `${this.decHost.o1}.${this.decHost.o2}.${this.decHost.o3}.${this.decHost.o4}`,
-            cidr: this.cidr,
-            decMask: IPv4.#toDecimalIP(this.binMask),
-            decWildCardMask: IPv4.#toDecimalIP(this.binWildCardMask),
-            decNetwork: IPv4.#toDecimalIP(this.binNetwork),
-            decBroadcast: IPv4.#toDecimalIP(this.binBroadcast),
-            decFirstAddress: IPv4.#toDecimalIP(this.binFirstAddr),
-            decLastAddress: IPv4.#toDecimalIP(this.binLastAddr),
-            numberOfUsableHosts: this.numberOfUsableHosts,
-            increment: this.increment,
-            numberOfSubNetworks: this.numberOfSubNetworks === 1 ? 0 : this.numberOfSubNetworks
+            decHost: `${this.#decHost.o1}.${this.#decHost.o2}.${this.#decHost.o3}.${this.#decHost.o4}`,
+            cidr: this.#cidr,
+            decMask: IPv4.#toDecimalIP(this.#binMask),
+            decWildCardMask: IPv4.#toDecimalIP(this.#binWildCardMask),
+            decNetwork: IPv4.#toDecimalIP(this.#binNetwork),
+            decBroadcast: IPv4.#toDecimalIP(this.#binBroadcast),
+            decFirstAddress: IPv4.#toDecimalIP(this.#binFirstAddr),
+            decLastAddress: IPv4.#toDecimalIP(this.#binLastAddr),
+            numberOfUsableHosts: this.#numberOfUsableHosts,
+            increment: this.#increment,
+            numberOfSubNetworks: this.#numberOfSubNetworks === 1 ? 0 : this.#numberOfSubNetworks
         }
     }
 
@@ -218,13 +228,13 @@ module.exports = class IPv4 {
      */
     getBinaryResults = () => {
         return {
-            binHost: this.binHost,
-            binMask: this.binMask,
-            binWildCardMask: this.binWildCardMask,
-            binNetwork: this.binNetwork,
-            binBroadcast: this.binBroadcast,
-            binFirstAddr: this.binFirstAddr,
-            binLastAddr: this.binLastAddr
+            binHost: this.#binHost,
+            binMask: this.#binMask,
+            binWildCardMask: this.#binWildCardMask,
+            binNetwork: this.#binNetwork,
+            binBroadcast: this.#binBroadcast,
+            binFirstAddr: this.#binFirstAddr,
+            binLastAddr: this.#binLastAddr
         }
     }
 
@@ -234,28 +244,16 @@ module.exports = class IPv4 {
     getAllResults = () => Object.assign(this.getDecimalResults(), this.getBinaryResults())
 
     /**
-     * @param {string} binOctet The binary octet that contains the network ID and the host ID.
-     * @returns Returns a network neighbour in binary format when CIDR or MASK allows subnet network
-     */
-    #calcBinNeighbourNetwork = (binOctet) => {
-        const floorCidr = this.cidr - this.netBitsInCurrentOctet
-        const floorBinNetwork = IPv4.#calcBinNetwork(this.binNetwork, floorCidr)
-        return floorBinNetwork.substring(0, floorCidr)
-            + binOctet
-            + floorBinNetwork.substring(floorCidr + IPv4.BITS_IN_OCTET, IPv4.BITS_IN_IPV4)
-    }
-
-    /**
      * @returns Returns all the results about the subnet networks in binary and decimal formats
      */
     getSubNetworks = () => {
-        if (this.numberOfSubNetworks === 1) { return null }
+        if (this.#numberOfSubNetworks === 1) { return null }
 
         const results = []
-        for (let i = 0; i < this.numberOfSubNetworks; i++) {
+        for (let i = 0; i < this.#numberOfSubNetworks; i++) {
 
-            const binNetwork = this.#calcBinNeighbourNetwork(IPv4.#toBinOctet(i * this.increment))
-            const binBroadcast = IPv4.#calcBinBroadcast(this.binNetwork, this.cidr)
+            const binNetwork = this.#calcBinNeighbourNetwork(IPv4.#toBinOctet(i * this.#increment))
+            const binBroadcast = IPv4.#calcBinBroadcast(this.#binNetwork, this.#cidr)
             const binFirstAddr = IPv4.#calcbinFirstAddr(binNetwork)
             const binLastAddr = IPv4.#calcbinLastAddr(binBroadcast)
 
