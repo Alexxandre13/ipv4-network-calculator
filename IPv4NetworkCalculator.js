@@ -17,27 +17,36 @@ module.exports = class IPv4 {
     static OCTET_MAX = 255
     static OCTET_POSSIBILITIES = 256
 
+    #decHost; #decMask; #cidr;
+    #binMask; #binHost; #binNetwork; #binBroadcast; #binFirstAddr; #binLastAddr; #binWildCardMask; 
+    #numberOfUsableHosts; #increment; #netBitsInCurrentOctet; #numberOfSubNetworks
+
     /**
      * @param {string} hostAddr - An IP address in cidr or mask format - '192.168.1.1/24' or '192.168.1.1 255.255.255.0'
      */
     constructor(hostAddr) {
         const octets = hostAddr.replace(/(\.|\/| )/g, '.').split('.');
+
         // Host object
         this.#decHost = { o1: octets[0], o2: octets[1], o3: octets[2], o4: octets[3] }
         try { IPv4.#checkIp(this.#decHost) } catch (e) { console.log(e); return }
 
         if (octets.length === 5) {
+
             // CIDR NOTATION
             this.#cidr = Number(octets[4])
             try { IPv4.#checkRangeAndIsNan('CIDR', this.#cidr, IPv4.CIDR_MIN, IPv4.CIDR_MAX) } catch (e) { console.log(e); return }
             this.#binMask = IPv4.#cidrToBinMask(this.#cidr)
+
         } else if (octets.length === 8) {
+
             // MASK NOTATION
             this.#decMask = { o1: octets[4], o2: octets[5], o3: octets[6], o4: octets[7] }
             try { IPv4.#checkIp(this.#decMask) } catch (e) { console.log(e); return }
             // TO ADD : CHeck if mask is valid
             this.#binMask = IPv4.#decIPtoBinIP(this.#decMask)
             this.#cidr = IPv4.#binMasktoCidr(this.#binMask)
+
         } else {
             throw new Error("The host input isn't valid, must be like : '192.168.0.1/24' or '192.168.0.1 255.255.255.0'")
         }
@@ -205,10 +214,17 @@ module.exports = class IPv4 {
     }
 
     /**
-     * @returns {object} Returns all the results in decimal form plus additionnal information
+     * @returns {object} Returns all the results in decimal and binary form plus additionnal information
      */
-    getDecimalResults = () => {
+    getNetworkInfo = () => {
         return {
+            binHost: this.#binHost,
+            binMask: this.#binMask,
+            binWildCardMask: this.#binWildCardMask,
+            binNetwork: this.#binNetwork,
+            binBroadcast: this.#binBroadcast,
+            binFirstAddr: this.#binFirstAddr,
+            binLastAddr: this.#binLastAddr,
             decHost: `${this.#decHost.o1}.${this.#decHost.o2}.${this.#decHost.o3}.${this.#decHost.o4}`,
             cidr: this.#cidr,
             decMask: IPv4.#toDecimalIP(this.#binMask),
@@ -224,29 +240,9 @@ module.exports = class IPv4 {
     }
 
     /**
-     * @returns {object} Returns all the results in binary form
-     */
-    getBinaryResults = () => {
-        return {
-            binHost: this.#binHost,
-            binMask: this.#binMask,
-            binWildCardMask: this.#binWildCardMask,
-            binNetwork: this.#binNetwork,
-            binBroadcast: this.#binBroadcast,
-            binFirstAddr: this.#binFirstAddr,
-            binLastAddr: this.#binLastAddr
-        }
-    }
-
-    /**
-     * @returns {object} Returns all the results in binary and decimal form
-     */
-    getAllResults = () => Object.assign(this.getDecimalResults(), this.getBinaryResults())
-
-    /**
      * @returns Returns all the results about the subnet networks in binary and decimal formats
      */
-    getSubNetworks = () => {
+     getSubNetworksInfo = () => {
         if (this.#numberOfSubNetworks === 1) { return null }
 
         const results = []
@@ -270,4 +266,15 @@ module.exports = class IPv4 {
         }
         return results
     }
+
+    /**
+     * @returns {object} Returns all the results in binary and decimal formats
+     */
+     getAllResults = () => {
+         return {
+            network: this.getNetworkInfo(),
+            subNetworks: this.getSubNetworksInfo()
+         }
+     }
+
 }
