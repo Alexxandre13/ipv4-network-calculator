@@ -1,9 +1,6 @@
-export interface iIPv4 {
-  o1: number;
-  o2: number;
-  o3: number;
-  o4: number;
-}
+import type { iIPv4 } from "./types";
+import * as f from "./functions";
+import * as p from "./properties";
 
 /**
  *  @licence MIT
@@ -14,13 +11,13 @@ export interface iIPv4 {
  */
 export class IPv4 {
   // Constants relative to IPv4 networks
-  private static BITS_IN_OCTET = 8;
-  private static BITS_IN_IPV4 = 32;
-  private static CIDR_MIN = 1;
-  private static CIDR_MAX = 32;
-  private static OCTET_MIN = 0;
-  private static OCTET_MAX = 255;
-  private static OCTET_POSSIBILITIES = 256;
+  private static BITS_IN_OCTET = p.BITS_IN_OCTET;
+  private static BITS_IN_IPV4 = p.BITS_IN_IPV4;
+  private static CIDR_MIN = p.CIDR_MIN;
+  private static CIDR_MAX = p.CIDR_MAX;
+  private static OCTET_MIN = p.OCTET_MIN;
+  private static OCTET_MAX = p.OCTET_MAX;
+  private static OCTET_POSSIBILITIES = p.OCTET_POSSIBILITIES;
 
   private decHost: iIPv4;
   private decMask: iIPv4 | undefined;
@@ -113,10 +110,7 @@ export class IPv4 {
    * @param {number} Ip.o3 The third octet
    * @param {number} Ip.o4 The fourth octet
    */
-  private static checkIp = (ip: iIPv4): void[] =>
-    Object.values(ip).map((octet: number) =>
-      IPv4.checkRangeAndType("Value", octet, IPv4.OCTET_MIN, IPv4.OCTET_MAX)
-    );
+  private static checkIp = f.checkIp;
 
   /**
    * Check if value is within the range and is a number type.
@@ -126,42 +120,19 @@ export class IPv4 {
    * @param {*} max The max value
    * @throws {Error} RangeError or TypeError
    */
-  private static checkRangeAndType = (
-    name: string,
-    value: number,
-    min: number,
-    max: number
-  ): void => {
-    if (value < min || value > max) {
-      throw new RangeError(
-        `${name}: ${value} is out of range ! It must be between ${min} and ${max}.`
-      );
-    }
-    if (isNaN(value)) {
-      throw new TypeError(
-        `${name}: ${value} is not a number ! It must be between ${min} and ${max}.`
-      );
-    }
-  };
+  private static checkRangeAndType = f.checkRangeAndType;
 
   /**
    * @param {iIPv4} decimalBytes Take the object with the four bytes
    * @returns {string} Returns the four bytes into a single binary string that keeps 0
    */
-  private static decIPtoBinIP = (decOctets: iIPv4): string =>
-    IPv4.toBinOctet(decOctets.o1) +
-    IPv4.toBinOctet(decOctets.o2) +
-    IPv4.toBinOctet(decOctets.o3) +
-    IPv4.toBinOctet(decOctets.o4);
+  private static decIPtoBinIP = f.decIPtoBinIP;
 
   /**
    * @param {number} decOctet A decimal octet number
    * @returns {string} Returns a binary byte string.
    */
-  private static toBinOctet = (decOctet: number): string => {
-    const binary = (decOctet >>> 0).toString(2);
-    return "0".repeat(IPv4.BITS_IN_OCTET - binary.length) + binary;
-  };
+  private static toBinOctet = f.toBinOctet;
 
   /**
    * @param {string} binMask - The mask in binary form

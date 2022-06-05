@@ -4,7 +4,8 @@
   "description": "Allow to calculate all sorts of informations regarding the IPv4 network",
   "main": "dist/IPv4.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test" : "pnpm exec jest"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,9 @@
   },
   "homepage": "https://github.com/Alexxandre13/ipv4-network-calculator#readme",
   "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.4",
     "typescript": "^4.7.3"
   }
 }
