@@ -166,8 +166,6 @@ export class IPv4 {
    */
   private static toDecimal = (binary: string): number => parseInt(binary, 2);
 
-  // static toBinary = decimal => Strin
-
   /**
    * @param {string} binHost A binary host
    * @param {number} cidr The cidr number between 1 and 32
