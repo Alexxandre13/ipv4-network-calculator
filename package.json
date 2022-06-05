@@ -1,0 +1,29 @@
+{
+  "name": "ipv4-network-calculator-ts",
+  "version": "0.0.2",
+  "description": "Allow to calculate all sorts of informations regarding the IPv4 network",
+  "main": "dist/IPv4.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alexxandre13/ipv4-network-calculator.git"
+  },
+  "keywords": [
+    "ip",
+    "ipv4",
+    "network",
+    "subnet",
+    "Subnetwork"
+  ],
+  "author": "Alexandre Dos Reis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alexxandre13/ipv4-network-calculator/issues"
+  },
+  "homepage": "https://github.com/Alexxandre13/ipv4-network-calculator#readme",
+  "devDependencies": {
+    "typescript": "^4.7.3"
+  }
+}
