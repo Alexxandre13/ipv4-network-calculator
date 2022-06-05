@@ -160,7 +160,7 @@ export class IPv4 {
    */
   private static toBinOctet = (decOctet: number): string => {
     const binary = (decOctet >>> 0).toString(2);
-    return String("0".repeat(IPv4.BITS_IN_OCTET - binary.length) + binary);
+    return "0".repeat(IPv4.BITS_IN_OCTET - binary.length) + binary;
   };
 
   /**
@@ -314,7 +314,7 @@ export class IPv4 {
   /**
    * @returns Returns all the results about the subnet networks in binary and decimal formats
    */
-  public getSubNetworksInfo = (): [] | null => {
+  public getSubNetworksInfo = (): {}[] | null => {
     if (this.numberOfSubNetworks === 1) {
       return null;
     }
