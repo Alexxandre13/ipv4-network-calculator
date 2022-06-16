@@ -138,120 +138,81 @@ export class IPv4 {
    * @param {string} binMask - The mask in binary form
    * @returns {number} Returns the cidr notation in number format
    */
-  private static binMasktoCidr = (binMask: string): number =>
-    [...binMask].filter((bit) => bit === "1").length;
+  private static binMasktoCidr = f.binMasktoCidr;
 
   /**
    * @param {number} cidr Take a number between 1 and 32.
    * @returns {string} Returns a binary byte string mask.
    */
-  private static cidrToBinMask = (cidr: number): string =>
-    "1".repeat(cidr) + "0".repeat(IPv4.BITS_IN_IPV4 - cidr);
+  private static cidrToBinMask = f.cidrToBinMask;
 
   /**
    * @param {string} binary The full binary string - 32 characters
    * @returns {string} returns a string containing four keys corresponding to the 4 octets
    */
-  private static toDecimalIP = (binary: string): string => {
-    const firstOctet = IPv4.toDecimal(binary.substring(0, 8));
-    const secondOctet = IPv4.toDecimal(binary.substring(8, 16));
-    const thirdOctet = IPv4.toDecimal(binary.substring(16, 24));
-    const fourthOctet = IPv4.toDecimal(binary.substring(24, 32));
-    return `${firstOctet}.${secondOctet}.${thirdOctet}.${fourthOctet}`;
-  };
+  private static toDecimalIP = f.toDecimalIP;
 
   /**
    * @param {string} binary A binary input string
    * @returns {number} Returns decimal
    */
-  private static toDecimal = (binary: string): number => parseInt(binary, 2);
+  private static toDecimal = f.toDecimal;
 
   /**
    * @param {string} binHost A binary host
    * @param {number} cidr The cidr number between 1 and 32
    * @returns {string}  Returns a binary network address
    */
-  private static calcBinNetwork = (binHost: string, cidr: number): string =>
-    binHost.substring(0, cidr) + "0".repeat(IPv4.BITS_IN_IPV4 - cidr);
+  private static calcBinNetwork = f.calcBinNetwork;
 
   /**
    * @param {string} binMask Take a binary mask as input
    * @returns {string} Returns the binary wildcard mask
    */
-  private static calcBinWildCardMask = (binMask: string): string =>
-    IPv4.calcInverseBit(binMask);
+  private static calcBinWildCardMask = f.calcBinWildCardMask;
 
   /**
    * @param {string} binMask Take a binary mask as input
    * @returns {number} Returns the number of usable hosts for the current mask
    */
-  private static calcNumberOfUsableHosts = (binMask: string): number => {
-    const number = IPv4.toDecimal(IPv4.calcInverseBit(binMask)) - 1;
-    return number <= 0 ? 0 : number;
-  };
+  private static calcNumberOfUsableHosts = f.calcNumberOfUsableHosts;
 
   /**
    * @param {string} bin A binary string
    * @returns {string} Returns the binary input but with bits inversed
    */
-  private static calcInverseBit = (bin: string): string =>
-    [...bin].map((bit) => (bit === "1" ? "0" : "1")).join("");
+  private static calcInverseBit = f.calcInverseBit;
 
   /**
    * @param {number} cidr The CIDR notation between 1 and 32
    * @returns {number} Returns the increment for the next subnet network
    */
-  private static calcIncrement = (cidr: number): number =>
-    IPv4.OCTET_POSSIBILITIES / 2 ** (cidr % IPv4.BITS_IN_OCTET);
+  private static calcIncrement = f.calcIncrement;
 
   /**
    * @param {string} binNetwork Take a binary network address string
    * @param {number} cidr Take the CIDR notation number between 1 and 32
    * @returns {string} Returns the broadcast address in binary format
    */
-  private static calcBinBroadcast = (
-    binNetwork: string,
-    cidr: number
-  ): string =>
-    binNetwork.substring(0, cidr) + "1".repeat(IPv4.BITS_IN_IPV4 - cidr);
+  private static calcBinBroadcast = f.calcBinBroadcast;
 
   /**
    * @param {string} binNetwork Take the binary network address
    * @returns {string} Returns the first usable address for a host
    */
-  private static calcbinFirstAddr = (binNetwork: string): string =>
-    binNetwork.substring(0, IPv4.BITS_IN_IPV4 - 1) + "1";
+  private static calcbinFirstAddr = f.calcbinFirstAddr;
 
   /**
    * @param {string} binBroadcast Take the binary broadcast address
    * @returns {string} Returns the last usable address for a host
    */
-  private static calcbinLastAddr = (binBroadcast: string): string =>
-    binBroadcast.substring(0, IPv4.BITS_IN_IPV4 - 1) + "0";
+  private static calcbinLastAddr = f.calcbinLastAddr;
 
   /**
    * @param {string} binOctet The binary octet that contains the network ID and the host ID.
    * @returns Returns a network neighbour in binary format when CIDR or MASK allows subnet network
    */
-  private calcBinNeighbourNetwork = (binOctet: string): string => {
-    if (
-      this.cidr === undefined ||
-      this.netBitsInCurrentOctet === undefined ||
-      this.binNetwork === undefined
-    ) {
-      throw new Error("CIDR or Network Bits are undefined !");
-    }
-    const floorCidr = this.cidr - this.netBitsInCurrentOctet;
-    const floorBinNetwork = IPv4.calcBinNetwork(this.binNetwork, floorCidr);
-    return (
-      floorBinNetwork.substring(0, floorCidr) +
-      binOctet +
-      floorBinNetwork.substring(
-        floorCidr + IPv4.BITS_IN_OCTET,
-        IPv4.BITS_IN_IPV4
-      )
-    );
-  };
+  private static calcBinNeighbourNetwork = f.calcBinNeighbourNetwork;
 
   /**
    * @returns {object} Returns all the results in decimal and binary form plus additionnal information
@@ -290,8 +251,11 @@ export class IPv4 {
 
     const results = [];
     for (let i = 0; i < this.numberOfSubNetworks!; i++) {
-      const binNetwork = this.calcBinNeighbourNetwork(
-        IPv4.toBinOctet(i * this.increment!)
+      const binNetwork = IPv4.calcBinNeighbourNetwork(
+        IPv4.toBinOctet(i * this.increment!),
+        this.cidr!,
+        this.netBitsInCurrentOctet!,
+        this.binNetwork!
       );
       const binBroadcast = IPv4.calcBinBroadcast(this.binNetwork!, this.cidr!);
       const binFirstAddr = IPv4.calcbinFirstAddr(binNetwork);

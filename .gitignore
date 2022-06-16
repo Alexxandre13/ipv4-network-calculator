@@ -1,6 +1,7 @@
 dist
 node_modules
 
+coverage
 logs
 *.log
 .pnpm-debug.log*

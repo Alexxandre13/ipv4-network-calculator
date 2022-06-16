@@ -5,7 +5,9 @@
   "main": "dist/IPv4.js",
   "scripts": {
     "build": "tsc",
-    "test" : "pnpm exec jest"
+    "test": "pnpm exec jest",
+    "test:cov": "pnpm exec jest --coverage",
+    "test:watch": "pnpm exec jest --watch"
   },
   "repository": {
     "type": "git",
