@@ -1,5 +1,4 @@
 import * as f from "../functions";
-import { iIPv4 } from "../types";
 
 const cases: [string, string][] = [
   ["00000000000000000000000000000000", "0.0.0.0"],
