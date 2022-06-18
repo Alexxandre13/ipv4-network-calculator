@@ -1,4 +1,4 @@
-# ipv4-network-calculator
+# ipv4-calc
 
 [![TypeScript](https://badgen.net/badge/icon/typescript?icon=typescript&label)](https://typescriptlang.org) [![CodeFactor](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator/badge)](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator) [![codecov](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator/branch/main/graph/badge.svg?token=4HG9MWWFKO)](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator) [![Build Status](https://drone.reges.fr/api/badges/alexandre-dos-reis/ipv4-network-calculator/status.svg?ref=refs/heads/main)](https://drone.reges.fr/alexandre-dos-reis/ipv4-network-calculator)
 
@@ -14,13 +14,13 @@ This library has the intention of providing various informations about IP v4 add
 
 To install as a dependency :
 ```
-npm install ipv4-net-calc
+npm install ipv4-calc
 ```
 
 Use it like so :
 
 ```js
-import { IPv4 } from 'ipv4-net-calc'
+import { IPv4 } from 'ipv4-calc'
 
 const ip = new IPv4('192.168.0.1/25') // OR new IPv4("192.168.0.1 255.255.255.128")
 

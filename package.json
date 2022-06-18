@@ -1,5 +1,5 @@
 {
-  "name": "ipv4-net-calc",
+  "name": "ipv4-calc",
   "version": "0.0.1",
   "description": "Calculates all kinds of information regarding the IPv4 network",
   "main": "dist/main.js",
