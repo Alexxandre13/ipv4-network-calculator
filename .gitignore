@@ -3,6 +3,7 @@ node_modules
 
 coverage
 codecov
+.codecov-token
 logs
 *.log
 .pnpm-debug.log*

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "test": "pnpm exec jest",
-    "test:cov": "pnpm exec jest --coverage",
+    "test:cov": "pnpm exec jest --coverage && ./codecov -t $(cat .codecov-token)",
     "test:watch": "pnpm exec jest --watch"
   },
   "repository": {
