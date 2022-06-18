@@ -12,17 +12,6 @@ it("should throw a range Error", () => {
   );
 });
 
-// it("should throw a type Error", () => {
-//   const name = "whatever";
-//   const value = 'ABC';
-//   const min = 0;
-//   const max = 255;
-  
-//   expect(() => f.checkRangeAndType(name, value, min, max)).toThrowError(
-//     `${name}: ${value} is not a number ! It must be between ${min} and ${max}.`
-//   );
-// });
-
 it("should return void", () => {
   const ip: iIPv4 = {
     o1: 192,  

@@ -2,11 +2,11 @@ import * as f from "../functions";
 
 const cases: [string, string][] = [
   ["00000000000000000000000000000000", "0.0.0.0"],
+  ["00000001000000010000000100000001", "1.1.1.1"],
+  ["00000011000000110000001100000011", "3.3.3.3"],
   ["11000000101010000000000000000001", "192.168.0.1"],
   ["11111111" + "11111111" + "11111111" + "11111111", "255.255.255.255"],
 ];
-
-// A retravailler, tester d'abord les autres functions et revenir sur celle-ci
 
 test.each(cases)("toDecimalIP( %s ) should return %s", (bin, ip) => {
   expect(f.toDecimalIP(bin)).toBe(ip);

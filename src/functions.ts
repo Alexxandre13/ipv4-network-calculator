@@ -61,10 +61,6 @@ export const calcBinNetwork = (binHost: string, cidr: number): string => {
   return binHost.substring(0, cidr) + "0".repeat(p.BITS_IN_IPV4 - cidr);
 };
 
-export const calcBinWildCardMask = (binMask: string): string => {
-  return calcInverseBit(binMask);
-};
-
 export const calcNumberOfUsableHosts = (binMask: string): number => {
   const number = toDecimal(calcInverseBit(binMask)) - 1;
   return number <= 0 ? 0 : number;

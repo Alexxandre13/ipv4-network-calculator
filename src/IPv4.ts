@@ -93,7 +93,7 @@ export class IPv4 {
     this.binBroadcast = IPv4.calcBinBroadcast(this.binNetwork, this.cidr);
     this.binFirstAddr = IPv4.calcbinFirstAddr(this.binNetwork);
     this.binLastAddr = IPv4.calcbinLastAddr(this.binBroadcast);
-    this.binWildCardMask = IPv4.calcBinWildCardMask(this.binMask);
+    this.binWildCardMask = IPv4.calcInverseBit(this.binMask);
 
     // Additionnal informations
     this.numberOfUsableHosts = IPv4.calcNumberOfUsableHosts(this.binMask);
@@ -167,12 +167,6 @@ export class IPv4 {
 
   /**
    * @param {string} binMask Take a binary mask as input
-   * @returns {string} Returns the binary wildcard mask
-   */
-  private static calcBinWildCardMask = f.calcBinWildCardMask;
-
-  /**
-   * @param {string} binMask Take a binary mask as input
    * @returns {number} Returns the number of usable hosts for the current mask
    */
   private static calcNumberOfUsableHosts = f.calcNumberOfUsableHosts;
@@ -198,13 +192,13 @@ export class IPv4 {
 
   /**
    * @param {string} binNetwork Take the binary network address
-   * @returns {string} Returns the first usable address for a host
+   * @returns {string} Returns the first usable address for a network
    */
   private static calcbinFirstAddr = f.calcbinFirstAddr;
 
   /**
    * @param {string} binBroadcast Take the binary broadcast address
-   * @returns {string} Returns the last usable address for a host
+   * @returns {string} Returns the last usable address for a network
    */
   private static calcbinLastAddr = f.calcbinLastAddr;
 
@@ -212,7 +206,7 @@ export class IPv4 {
    * @param {string} binOctet The binary octet that contains the network ID and the host ID.
    * @returns Returns a network neighbour in binary format when CIDR or MASK allows subnet network
    */
-  private static calcBinNeighbourNetwork = f.calcBinNeighbourNetwork;
+  private static calcBinNeighboursNetwork = f.calcBinNeighbourNetwork;
 
   /**
    * @returns {object} Returns all the results in decimal and binary form plus additionnal information
@@ -244,20 +238,20 @@ export class IPv4 {
   /**
    * @returns Returns all the results about the subnet networks in binary and decimal formats
    */
-  public getSubNetworksInfo = (): {}[] | null => {
+  public getSubNetworksInfo = (): object[] | null => {
     if (this.numberOfSubNetworks === 1) {
       return null;
     }
 
     const results = [];
     for (let i = 0; i < this.numberOfSubNetworks!; i++) {
-      const binNetwork = IPv4.calcBinNeighbourNetwork(
+      const binNetwork = IPv4.calcBinNeighboursNetwork(
         IPv4.toBinOctet(i * this.increment!),
         this.cidr!,
         this.netBitsInCurrentOctet!,
         this.binNetwork!
       );
-      const binBroadcast = IPv4.calcBinBroadcast(this.binNetwork!, this.cidr!);
+      const binBroadcast = IPv4.calcBinBroadcast(binNetwork, this.cidr!);
       const binFirstAddr = IPv4.calcbinFirstAddr(binNetwork);
       const binLastAddr = IPv4.calcbinLastAddr(binBroadcast);
 
