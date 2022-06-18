@@ -1,8 +1,6 @@
 # ipv4-network-calculator
 
-[![CodeFactor](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator/badge)](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator) [![codecov](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator/branch/main/graph/badge.svg?token=4HG9MWWFKO)](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator) [![Build Status](https://drone.reges.fr/api/badges/alexandre-dos-reis/ipv4-network-calculator/status.svg?ref=refs/heads/main)](https://drone.reges.fr/alexandre-dos-reis/ipv4-network-calculator)
-
-## **This lib is under construction !!**
+[![TypeScript](https://badgen.net/badge/icon/typescript?icon=typescript&label)](https://typescriptlang.org) [![CodeFactor](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator/badge)](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator) [![codecov](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator/branch/main/graph/badge.svg?token=4HG9MWWFKO)](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator) [![Build Status](https://drone.reges.fr/api/badges/alexandre-dos-reis/ipv4-network-calculator/status.svg?ref=refs/heads/main)](https://drone.reges.fr/alexandre-dos-reis/ipv4-network-calculator)
 
 This library has the intention of providing various informations about IP v4 addresses. Here are some of the features :
 
@@ -10,12 +8,20 @@ This library has the intention of providing various informations about IP v4 add
 - Binary and decimal outputs
 - Get also all the informations about sub networks.
 - More to come like Class addresses, etc...
+- 0 dependencies !
 
 ## Get started
 
-This library is intended to be use this way :
+To install as a dependency :
+```
+npm install ipv4-net-calc
+```
+
+Use it like so :
 
 ```js
+import { IPv4 } from 'ipv4-net-calc'
+
 const ip = new IPv4('192.168.0.1/25') // OR new IPv4("192.168.0.1 255.255.255.128")
 
 console.log(ip.getNetworkInfo()); // Should output :
@@ -64,3 +70,7 @@ console.log(ip.getSubNetworksInfo()); // Should output :
   }
 ]
 ```
+
+## Contributing
+
+Contributions, issues and feature requests are welcome!
