@@ -10,6 +10,14 @@ This library has the intention of providing various informations about IP v4 add
 - More to come like Class addresses, etc...
 - 0 dependencies !
 
+## TypeScript
+
+The module is written in TypeScript and type definitions files are included.
+
+## Contributing
+
+Contributions, issues and feature requests are welcome!
+
 ## Get started
 
 To install as a dependency :
@@ -18,7 +26,6 @@ npm install ipv4-calc
 ```
 
 Use it like so :
-
 ```js
 const { IPv4 } = require("ipv4-calc");
 
@@ -69,8 +76,7 @@ console.log(ip.getSubNetworksInfo()); // Should output :
     decBroadcast: '192.168.0.255'
   }
 ]
+
+// Or get the 2 functions above in 1 call with :
+console.log(ip.getAllResults())
 ```
-
-## Contributing
-
-Contributions, issues and feature requests are welcome!
