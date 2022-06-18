@@ -21,11 +21,13 @@ Contributions, issues and feature requests are welcome!
 ## Get started
 
 To install as a dependency :
+
 ```
 npm install ipv4-calc
 ```
 
 Use it like so :
+
 ```js
 const { IPv4 } = require("ipv4-calc");
 

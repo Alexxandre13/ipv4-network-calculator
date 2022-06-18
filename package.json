@@ -5,13 +5,14 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
+    "format": "pnpm exec prettier . --write",
     "test": "pnpm exec jest",
     "test:cov": "pnpm exec jest --coverage && ./codecov -t $(cat .codecov-token)",
     "test:watch": "pnpm exec jest --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Alexxandre13/ipv4-network-calculator.git"
+    "url": "git+https://github.com/alexandre-dos-reis/ipv4-calc"
   },
   "keywords": [
     "ip",
@@ -23,15 +24,16 @@
   "author": "Alexandre Dos Reis",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Alexxandre13/ipv4-network-calculator/issues"
+    "url": "https://github.com/alexandre-dos-reis/ipv4-calc/issues"
   },
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/Alexxandre13/ipv4-network-calculator#readme",
+  "homepage": "https://github.com/alexandre-dos-reis/ipv4-calc#readme",
   "devDependencies": {
     "@types/jest": "^28.1.1",
     "jest": "^28.1.0",
+    "prettier": "^2.7.1",
     "ts-jest": "^28.0.4",
     "typescript": "^4.7.3"
   }

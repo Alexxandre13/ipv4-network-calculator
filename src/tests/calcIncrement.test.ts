@@ -1,4 +1,4 @@
-import * as f from "../functions";
+import * as f from '../functions'
 
 const cases: [number, number][] = [
   [0, 256],
@@ -34,8 +34,8 @@ const cases: [number, number][] = [
   [30, 4],
   [31, 2],
   [32, 256],
-];
+]
 
-test.each(cases)("calcIncrement( %s ) should return %s", (cidr, inc) => {
-  expect(f.calcIncrement(cidr)).toBe(inc);
-});
+test.each(cases)('calcIncrement( %s ) should return %s', (cidr, inc) => {
+  expect(f.calcIncrement(cidr)).toBe(inc)
+})

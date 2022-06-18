@@ -1,5 +1,5 @@
-import * as f from "../functions";
-import { iIPv4 } from "../types";
+import * as f from '../functions'
+import { iIPv4 } from '../types'
 
 const cases: [iIPv4, string][] = [
   [
@@ -9,7 +9,7 @@ const cases: [iIPv4, string][] = [
       o3: 0,
       o4: 1,
     },
-    "11000000101010000000000000000001",
+    '11000000101010000000000000000001',
   ],
   [
     {
@@ -18,7 +18,7 @@ const cases: [iIPv4, string][] = [
       o3: 0,
       o4: 0,
     },
-    "00000000000000000000000000000000",
+    '00000000000000000000000000000000',
   ],
   [
     {
@@ -27,10 +27,10 @@ const cases: [iIPv4, string][] = [
       o3: 255,
       o4: 255,
     },
-    "11111111111111111111111111111111",
+    '11111111111111111111111111111111',
   ],
-];
+]
 
-test.each(cases)("decIPtoBinIP( %s ) should return %s", (ipv4, bin) => {
-  expect(f.decIPtoBinIP(ipv4)).toBe(bin);
-});
+test.each(cases)('decIPtoBinIP( %s ) should return %s', (ipv4, bin) => {
+  expect(f.decIPtoBinIP(ipv4)).toBe(bin)
+})
