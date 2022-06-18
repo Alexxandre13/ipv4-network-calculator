@@ -1,8 +1,6 @@
 # ipv4-network-calculator
 
-[![CodeFactor](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator/badge)](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator)
-
-[![codecov](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator/branch/main/graph/badge.svg?token=4HG9MWWFKO)](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator)
+[![CodeFactor](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator/badge)](https://www.codefactor.io/repository/github/alexandre-dos-reis/ipv4-network-calculator) [![codecov](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator/branch/main/graph/badge.svg?token=4HG9MWWFKO)](https://codecov.io/gh/alexandre-dos-reis/ipv4-network-calculator)
 
 ## **This lib is under construction !!**
 
