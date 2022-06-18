@@ -1,4 +1,4 @@
-const { IPv4 } = require('./dist/IPv4')
+const { IPv4 } = require('ipv4-calc')
 
 const ip = new IPv4('192.168.0.1/25') // OR new IPv4("192.168.0.1 255.255.255.128")
 
