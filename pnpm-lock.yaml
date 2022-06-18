@@ -2,13 +2,9 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/jest': ^28.1.1
-  ipv4-net-calc: ^0.0.1
   jest: ^28.1.0
   ts-jest: ^28.0.4
   typescript: ^4.7.3
-
-dependencies:
-  ipv4-net-calc: 0.0.1
 
 devDependencies:
   '@types/jest': 28.1.1
@@ -1212,10 +1208,6 @@ packages:
   /inherits/2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
-
-  /ipv4-net-calc/0.0.1:
-    resolution: {integrity: sha512-2plg/0wbEWee1m9Z3EaoI9BK8tca3AWgxeWxmgFCBseO81g9hfb1NgXTh6wZPLmHNnXToMO2oYcXhzEww37n9g==}
-    dev: false
 
   /is-arrayish/0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
