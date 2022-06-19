@@ -1,4 +1,4 @@
-import type { iIPv4 } from './types'
+import type { iIPv4, iNetworkInfo, iSubNetworkInfo } from './types'
 import * as f from './functions'
 import * as p from './properties'
 
@@ -12,12 +12,8 @@ import * as p from './properties'
 export class IPv4 {
   // Constants relative to IPv4 networks
   private static BITS_IN_OCTET = p.BITS_IN_OCTET
-  private static BITS_IN_IPV4 = p.BITS_IN_IPV4
   private static CIDR_MIN = p.CIDR_MIN
   private static CIDR_MAX = p.CIDR_MAX
-  private static OCTET_MIN = p.OCTET_MIN
-  private static OCTET_MAX = p.OCTET_MAX
-  private static OCTET_POSSIBILITIES = p.OCTET_POSSIBILITIES
 
   private decHost: iIPv4
   private decMask: iIPv4 | undefined
@@ -209,33 +205,33 @@ export class IPv4 {
   /**
    * @returns {object} Returns all the results in decimal and binary form plus additionnal information
    */
-  public getNetworkInfo = (): object => {
+  public getNetworkInfo = (): iNetworkInfo => {
     return {
-      binHost: this.binHost,
-      binMask: this.binMask,
-      binWildCardMask: this.binWildCardMask,
-      binNetwork: this.binNetwork,
-      binBroadcast: this.binBroadcast,
-      binFirstAddr: this.binFirstAddr,
-      binLastAddr: this.binLastAddr,
+      binHost: this.binHost!,
+      binMask: this.binMask!,
+      binWildCardMask: this.binWildCardMask!,
+      binNetwork: this.binNetwork!,
+      binBroadcast: this.binBroadcast!,
+      binFirstAddr: this.binFirstAddr!,
+      binLastAddr: this.binLastAddr!,
       decHost: `${this.decHost.o1}.${this.decHost.o2}.${this.decHost.o3}.${this.decHost.o4}`,
-      cidr: this.cidr,
+      cidr: this.cidr!,
       decMask: IPv4.toDecimalIP(this.binMask!),
       decWildCardMask: IPv4.toDecimalIP(this.binWildCardMask!),
       decNetwork: IPv4.toDecimalIP(this.binNetwork!),
       decBroadcast: IPv4.toDecimalIP(this.binBroadcast!),
       decFirstAddress: IPv4.toDecimalIP(this.binFirstAddr!),
       decLastAddress: IPv4.toDecimalIP(this.binLastAddr!),
-      numberOfUsableHosts: this.numberOfUsableHosts,
-      increment: this.increment,
-      numberOfSubNetworks: this.numberOfSubNetworks === 1 ? 0 : this.numberOfSubNetworks,
+      numberOfUsableHosts: this.numberOfUsableHosts!,
+      increment: this.increment!,
+      numberOfSubNetworks: this.numberOfSubNetworks === 1 ? 0 : this.numberOfSubNetworks!,
     }
   }
 
   /**
    * @returns Returns all the results about the subnet networks in binary and decimal formats
    */
-  public getSubNetworksInfo = (): object[] | null => {
+  public getSubNetworksInfo = (): iSubNetworkInfo[] | null => {
     if (this.numberOfSubNetworks === 1) {
       return null
     }
@@ -269,7 +265,7 @@ export class IPv4 {
   /**
    * @returns {object} Returns all the results in binary and decimal formats
    */
-  public getAllResults = (): object => {
+  public getAllResults = (): { network: iNetworkInfo; subNetworks: iSubNetworkInfo[] | null } => {
     return {
       network: this.getNetworkInfo(),
       subNetworks: this.getSubNetworksInfo(),

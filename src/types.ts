@@ -8,3 +8,35 @@ export interface iIPv4 {
 export interface iClass {
   class: 'A' | 'B' | 'C' | 'D' | 'E'
 }
+
+export interface iNetworkInfo {
+  binHost: string
+  binMask: string
+  binWildCardMask: string
+  binNetwork: string
+  binBroadcast: string
+  binFirstAddr: string
+  binLastAddr: string
+  decHost: string
+  cidr: number
+  decMask: string
+  decWildCardMask: string
+  decNetwork: string
+  decBroadcast: string
+  decFirstAddress: string
+  decLastAddress: string
+  numberOfUsableHosts: number
+  increment: number
+  numberOfSubNetworks: number
+}
+
+export interface iSubNetworkInfo {
+  binNetwork: string
+  binFirstAddr: string
+  binLastAddr: string
+  binBroadcast: string
+  decNetwork: string
+  decFirstAddr: string
+  decLastAddr: string
+  decBroadcast: string
+}

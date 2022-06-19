@@ -1,10 +1,10 @@
 {
   "name": "ipv4-calc",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Calculates all kinds of information regarding the IPv4 network",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "format": "pnpm exec prettier . --write",
     "test": "pnpm exec jest",
     "test:cov": "pnpm exec jest --coverage && ./codecov -t $(cat .codecov-token)",

@@ -1,4 +1,7 @@
-const { IPv4 } = require('ipv4-calc')
+// Common JS
+const { IPv4 } = require('ipv4-calc') 
+// Module ES
+import { IPv4 } from 'ipv4-calc'
 
 const ip = new IPv4('192.168.0.1/25') // OR new IPv4("192.168.0.1 255.255.255.128")
 
