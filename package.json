@@ -1,6 +1,6 @@
 {
   "name": "ipv4-calc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Calculates all kinds of information regarding the IPv4 network",
   "main": "dist/main.js",
   "scripts": {
